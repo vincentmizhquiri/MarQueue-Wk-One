@@ -1,0 +1,65 @@
+{
+  "_comment": "This JSON mirrors the Postgres tables in database/schema.sql. It is the contract between front end and back end. The browser demo loads an inline copy of this (see js/data.js) so it runs by double-clicking index.html with no server. DEMO passwords are plaintext here ONLY so you can log in easily; the running app hashes them in memory and a real backend uses Supabase Auth.",
+
+  "app_users": [
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "email": "rob@marqueue.app",
+      "demo_password": "demo123",
+      "created_at": "2026-06-01T09:00:00Z"
+    },
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "email": "vince@marqueue.app",
+      "demo_password": "demo123",
+      "created_at": "2026-06-02T09:00:00Z"
+    }
+  ],
+
+  "recordings": [
+    {
+      "id": "aaaaaaaa-0000-0000-0000-000000000001",
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "title": "Onboarding flow walkthrough",
+      "script_text": "Show the signup screen, then the empty dashboard, then record one demo.",
+      "status": "complete",
+      "duration_seconds": 92,
+      "resolution": "1920x1080",
+      "codec": "video/webm;codecs=vp9",
+      "share_token": "sample-token-rob-onboarding",
+      "storage_path": "private/rob/onboarding.webm",
+      "local_blob_available": false,
+      "created_at": "2026-06-05T14:20:00Z"
+    },
+    {
+      "id": "aaaaaaaa-0000-0000-0000-000000000002",
+      "user_id": "11111111-1111-1111-1111-111111111111",
+      "title": "Bug repro: upload retry",
+      "script_text": "Trigger an upload failure and show the blob is kept for retry.",
+      "status": "complete",
+      "duration_seconds": 47,
+      "resolution": "1920x1080",
+      "codec": "video/webm;codecs=vp9",
+      "share_token": "sample-token-rob-bug",
+      "storage_path": "private/rob/bug-repro.webm",
+      "local_blob_available": false,
+      "created_at": "2026-06-06T10:05:00Z"
+    },
+    {
+      "id": "bbbbbbbb-0000-0000-0000-000000000001",
+      "user_id": "22222222-2222-2222-2222-222222222222",
+      "title": "Sprint update - week 23",
+      "script_text": "Quick async status: shipped, blocked, next.",
+      "status": "complete",
+      "duration_seconds": 130,
+      "resolution": "1920x1080",
+      "codec": "video/webm;codecs=vp9",
+      "share_token": "sample-token-vince-sprint",
+      "storage_path": "private/vince/sprint-23.webm",
+      "local_blob_available": false,
+      "created_at": "2026-06-07T16:40:00Z"
+    }
+  ],
+
+  "telemetry_events": []
+}
