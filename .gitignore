@@ -1,0 +1,26 @@
+# =====================================================================
+# MarQueue-wk-one  ·  .gitignore
+# Keeps secrets and noise OUT of your GitHub repo.
+# (Security check: no secret keys, passwords, or API keys committed.)
+# =====================================================================
+
+# Real secrets live ONLY in .env files (never committed) anywhere in the repo.
+# .env.example is safe to commit (it has variable NAMES only, no values).
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+!.env.example
+
+# Dependencies / build output (if you add a Node backend later)
+node_modules/
+dist/
+build/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

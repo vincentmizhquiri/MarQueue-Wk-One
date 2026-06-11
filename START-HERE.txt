@@ -1,0 +1,25 @@
+MarQueue-wk-one  —  copy for Vince
+=====================================
+
+WHERE THIS GOES
+  Unzip so the project folder lands at:
+      file:///Users/vince/L2/wk-1/MarQueue-wk-one
+
+  On a Mac you can drag the unzipped "MarQueue-wk-one" folder into:
+      file:///Users/vince/L2/wk-1
+
+HOW TO RUN (easiest)
+  1. Open  MarQueue-wk-one/frontend/
+  2. Double-click  index.html   (use Google Chrome on desktop)
+  3. Log in with a demo account:
+         rob@marqueue.app    / demo123
+         vince@marqueue.app  / demo123
+     (or click a demo chip on the login screen to auto-fill)
+
+WHAT'S INSIDE
+  frontend/  → the app you run (HTML / CSS / JavaScript)
+  backend/   → the PostgreSQL schema + JSON seed it's built against
+  docs/      → the wireframe this build follows
+  README.md  → full step-by-step, build order, and the security checklist
+
+Everything runs in the browser — no install, no server needed.

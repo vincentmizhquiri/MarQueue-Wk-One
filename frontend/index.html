@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarQueue-wk-one · Record &amp; Share</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ===================== TOP BAR (only when logged in) ===================== -->
+  <header class="appbar hidden" id="appbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <span class="name">MarQueue</span>
+      <span class="tag">wk-one</span>
+    </div>
+    <nav class="navtabs" id="navtabs">
+      <button class="navtab active" data-view="record">Record</button>
+      <button class="navtab" data-view="library">Library</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="who" id="whoami"></div>
+    <button class="btn btn-ghost btn-sm" id="logoutBtn">Log out</button>
+  </header>
+
+  <!-- ===================== AUTH VIEW ===================== -->
+  <main id="view-auth" class="view auth-wrap">
+    <div class="auth-hero">
+      <span class="logo">
+        <span class="dot"></span>
+        <span class="name">MarQueue</span>
+      </span>
+      <p>Record your screen. Share a link in seconds. Never lose a take to a flaky upload.</p>
+    </div>
+
+    <div class="authcard">
+      <div class="authtabs">
+        <button class="authtab active" id="tabLogin">Log in</button>
+        <button class="authtab" id="tabSignup">Sign up</button>
+      </div>
+
+      <!-- LOGIN -->
+      <form id="loginForm" class="stack" novalidate>
+        <label class="field">
+          <span class="lab">Email</span>
+          <input type="email" id="loginEmail" autocomplete="username" placeholder="you@example.com" />
+          <div class="fielderr" id="loginEmailErr"></div>
+        </label>
+        <label class="field">
+          <span class="lab">Password</span>
+          <input type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••" />
+          <div class="fielderr" id="loginPasswordErr"></div>
+        </label>
+        <div class="banner err hidden" id="loginBanner"></div>
+        <button class="btn btn-primary" type="submit" style="width:100%; justify-content:center;">Log in</button>
+        <button class="btn btn-ghost btn-sm" type="button" id="forgotBtn" style="width:100%; justify-content:center;">Forgot password?</button>
+        <div class="banner ok hidden" id="resetBanner"></div>
+      </form>
+
+      <!-- SIGNUP -->
+      <form id="signupForm" class="stack hidden" novalidate>
+        <label class="field">
+          <span class="lab">Email</span>
+          <input type="email" id="signupEmail" autocomplete="username" placeholder="you@example.com" />
+          <div class="fielderr" id="signupEmailErr"></div>
+        </label>
+        <label class="field">
+          <span class="lab">Password <span class="faint mono" style="font-weight:400;">(min 6 characters)</span></span>
+          <input type="password" id="signupPassword" autocomplete="new-password" placeholder="choose a password" />
+          <div class="fielderr" id="signupPasswordErr"></div>
+        </label>
+        <div class="banner err hidden" id="signupBanner"></div>
+        <button class="btn btn-primary" type="submit" style="width:100%; justify-content:center;">Create account</button>
+      </form>
+
+      <!-- DEMO ACCOUNTS -->
+      <div class="demo-creds">
+        <div class="section-label">Demo logins — tap to fill</div>
+        <div class="demochip-row" id="demoChips"></div>
+      </div>
+    </div>
+    <p class="foot">Chrome desktop recommended for live screen recording.</p>
+  </main>
+
+  <!-- ===================== APP (record + library) ===================== -->
+  <div id="view-app" class="wrap hidden">
+
+    <!-- ---------- RECORD VIEW ---------- -->
+    <section id="view-record" class="view">
+
+      <div class="banner warn hidden" id="mobileNote" style="margin-bottom:18px;">
+        <span>⚠️</span>
+        <span>Live screen recording uses the desktop browser screen-capture API, which mobile browsers don’t expose. You can still browse your <b>Library</b> and open shared links here. To record, use Chrome on a desktop.</span>
+      </div>
+
+      <!-- script -->
+      <div class="card">
+        <div class="row">
+          <div>
+            <h2>Script &amp; notes</h2>
+            <div class="sub">Optional. Locks automatically when recording starts. (Sets up the next-phase teleprompter.)</div>
+          </div>
+          <div class="spacer"></div>
+          <span class="chip idle" id="scriptLockChip"><span class="led"></span>unlocked</span>
+        </div>
+        <div style="margin-top:14px;">
+          <textarea id="scriptInput" placeholder="Paste or type your script / talking points here…"></textarea>
+          <div class="charcount" id="scriptCount">0 / 20000</div>
+          <div class="fielderr" id="scriptErr"></div>
+        </div>
+      </div>
+
+      <!-- recorder -->
+      <div class="card">
+        <div class="row wrap">
+          <div>
+            <h2>Recorder</h2>
+            <div class="sub">Screen + mic + system audio · 1080p ceiling · WebM/VP9 · 15 min max</div>
+          </div>
+          <div class="spacer"></div>
+          <span class="chip idle" id="statusChip"><span class="led"></span><span id="statusText">idle</span></span>
+        </div>
+
+        <!-- state machine track -->
+        <div class="statetrack" id="stateTrack"></div>
+
+        <div class="recorder-grid" style="margin-top:18px;">
+          <div class="preview-box">
+            <video id="preview" autoplay muted playsinline></video>
+            <div class="preview-empty" id="previewEmpty">No preview yet.<br/>Press “Start recording”.</div>
+            <div class="timer" id="timer">00:00</div>
+            <div class="rec-badge" id="recBadge"><span class="led"></span>REC</div>
+          </div>
+
+          <div class="stack">
+            <label class="toggle">
+              <input type="checkbox" id="micToggle" checked />
+              <span class="track"></span>
+              <span>Capture microphone</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="failToggle" />
+              <span class="track"></span>
+              <span>Simulate upload failure <span class="faint">(demo the retry guarantee)</span></span>
+            </label>
+
+            <div class="row wrap" style="margin-top:4px;">
+              <button class="btn btn-rec" id="startBtn"><span class="reccircle"></span>Start recording</button>
+              <button class="btn btn-stop hidden" id="stopBtn"><span class="recsquare"></span>Stop</button>
+            </div>
+
+            <div class="limit-note">
+              Limit notice fires at <b>14:00</b> and recording auto-stops at <b>15:00</b>.
+            </div>
+            <div class="banner warn hidden" id="limitBanner"></div>
+            <div class="banner err hidden" id="permBanner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- upload -->
+      <div class="card hidden" id="uploadCard">
+        <h2>Upload</h2>
+        <div class="sub">Single-shot transfer · up to 3 retries with exponential backoff · blob kept in memory on failure</div>
+        <div class="progress"><span id="uploadBar"></span></div>
+        <div class="upload-msg" id="uploadMsg">Preparing…</div>
+        <div class="row wrap" style="margin-top:12px;">
+          <button class="btn btn-primary hidden" id="retryBtn">Retry upload (blob preserved)</button>
+          <button class="btn btn-ghost hidden" id="copyLinkBtn">Copy share link</button>
+          <button class="btn btn-ghost hidden" id="openLibBtn">Go to library</button>
+        </div>
+      </div>
+
+      <!-- telemetry -->
+      <div class="telemetry">
+        <details>
+          <summary>Internal telemetry (PRD §7) — events captured this session</summary>
+          <pre id="telemetryOut">No events yet.</pre>
+        </details>
+      </div>
+    </section>
+
+    <!-- ---------- LIBRARY VIEW ---------- -->
+    <section id="view-library" class="view hidden">
+      <div class="row" style="margin-bottom:16px;">
+        <div>
+          <h2 style="font-family:var(--display); font-size:1.4rem;">Your recordings</h2>
+          <div class="sub muted">Only your own recordings are shown — enforced by the data layer (Row Level Security).</div>
+        </div>
+      </div>
+      <div class="lib-grid" id="libGrid"></div>
+    </section>
+
+  </div>
+
+  <!-- ===================== SHARE VIEW (no login) ===================== -->
+  <main id="view-share" class="view share-wrap hidden">
+    <div class="brand" style="margin-bottom:18px;">
+      <span class="dot"></span><span class="name" style="font-family:var(--display); font-size:1.3rem;">MarQueue</span>
+      <span class="tag">shared recording</span>
+    </div>
+    <div id="shareContent"></div>
+    <p class="foot"><a href="#" id="shareHome" style="color:var(--ink-faint);">← Back to MarQueue</a></p>
+  </main>
+
+  <div class="toast-host" id="toastHost"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
